@@ -1,6 +1,17 @@
 ﻿# E视界 (DongguaTV Enhanced Edition)
 
-这是一个经过全面重构和升级的现代流媒体聚合播放器，基于 Node.js 和 Vue 3 构建。相比原版，本作引入了 Netflix 风格的沉浸式 UI、TMDb 数据驱动的动态榜单、以及智能的多源聚合搜索功能。
+这是一个经过全面重构和升级的现代流媒体聚合播放器，基于 Node.js 和 Vue 3 构建。相比原版 https://github.com/Minerchu/dongguaTV ，本作添加了许多功能。
+
+# 演示网站
+
+https://ednovas-test.vercel.app （不包含任何数据）
+
+<img width="2547" height="1226" alt="image" src="https://github.com/user-attachments/assets/15392a90-9078-45b6-828d-829402669950" />
+
+<img width="2547" height="1227" alt="image" src="https://github.com/user-attachments/assets/d03543f5-34a4-414b-a131-62eda0af21b2" />
+
+<img width="2547" height="1229" alt="image" src="https://github.com/user-attachments/assets/e8bd4e14-dbd2-4d49-a1fc-7979c1ca22a4" />
+
 
 ---
 
@@ -24,10 +35,12 @@
 
 ### 1. 🎬 双引擎数据驱动
 - **TMDb (The Movie Database)**：提供高质量的电影/剧集元数据（海报、背景图、评分、简介、演职员表）。
-- **CMS 聚合源 (Maccms)**：集成 **48+** 个第三方资源站 API，自动进行**全网测速**，智能过滤失效源，确保播放流畅。
+- **CMS 聚合源 (Maccms)**：可集成多个自定义第三方资源站 API，自动进行**全网测速**，智能过滤失效源，确保播放流畅。
 
 ### 2. 🔍 智能搜索与聚合
 - **实时流式搜索 (SSE)**：采用 Server-Sent Events 技术，搜索结果**边搜边显**，即时反馈，无需等待所有源响应。
+- **智能关键词匹配**：自动生成搜索变体（去除副标题、季数后缀等），同时搜索中英文名，大幅提高命中率。
+- **自动英中翻译**：检测到英文搜索词时，自动通过 TMDB 获取中文译名并一起搜索（如搜索 "Stranger Things" 会自动添加 "怪奇物语"），无需外部翻译 API。
 - **自动分组与实时合并**：同一影片的不同线路自动聚合，新搜索到的源实时合并到已有卡片，右上角源数量实时跳动。
 - **SQLite 永久缓存**：内置高性能 SQLite 数据库缓存，支持无限存储，读写速度极快，热搜词秒级响应。
 
@@ -765,27 +778,6 @@ docker run -d -p 3000:3000 \
 **解决方案**：
 
 本项目已内置 HTTP 支持配置。如果您使用 GitHub Actions 自动构建或本地构建，APK 会自动支持 HTTP 访问。
-
-**技术细节** (已在项目中配置，无需手动操作)：
-
-1. `android/app/src/main/AndroidManifest.xml` 已添加：
-   ```xml
-   <application
-       android:usesCleartextTraffic="true"
-       android:networkSecurityConfig="@xml/network_security_config"
-       ...>
-   ```
-
-2. `android/app/src/main/res/xml/network_security_config.xml` 已配置：
-   ```xml
-   <network-security-config>
-       <base-config cleartextTrafficPermitted="true">
-           <trust-anchors>
-               <certificates src="system" />
-           </trust-anchors>
-       </base-config>
-   </network-security-config>
-   ```
 
 **使用 GitHub Actions 构建内网 APK**：
 
